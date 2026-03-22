@@ -1,0 +1,38 @@
+name: TwilightSMP Discord Orchestrator
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+    name: ✦ Dispatch Events to Discord
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: src/package.json
+
+      - name: Install dependencies
+        working-directory: src
+        run: npm install
+
+      - name: Run orchestrator
+        working-directory: src
+        env:
+          TWILIGHT_TOKEN: ${{ secrets.TWILIGHT_TOKEN }}
+          DISCORD_WEBHOOK_PUSH: ${{ secrets.DISCORD_WEBHOOK_PUSH }}
+          DISCORD_WEBHOOK_PR: ${{ secrets.DISCORD_WEBHOOK_PR }}
+          DISCORD_WEBHOOK_ISSUES: ${{ secrets.DISCORD_WEBHOOK_ISSUES }}
+          DISCORD_WEBHOOK_RELEASE: ${{ secrets.DISCORD_WEBHOOK_RELEASE }}
+        run: node main.js
