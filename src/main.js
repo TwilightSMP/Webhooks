@@ -3,7 +3,7 @@ import { handlePush } from './events/push.js';
 import { handlePullRequest } from './events/pull_request.js';
 import { handleIssues } from './events/issues.js';
 import { handleRelease } from './events/release.js';
-import { ORG, COLORS, HEARTBEAT_ENABLED } from './config.js';
+import { ORG } from './config.js';
 
 const REQUIRED_ENV = [
   'TWILIGHT_TOKEN',
@@ -29,37 +29,6 @@ async function fetchOrgRepos(token) {
   return repos;
 }
 
-async function sendHeartbeat(token) {
-  const webhookUrl = process.env.DISCORD_WEBHOOK_PUSH;
-  if (!webhookUrl) return;
-
-  try {
-    let repoCount = 0;
-    try {
-      const repos = await githubFetch(`/orgs/${ORG}/repos?per_page=1`, token);
-      repoCount = repos.length;
-    } catch {}
-
-    const embed = smpEmbed(
-      'Orchestrator Heartbeat',
-      `The TwilightSMP watcher is **active** and scanning all repositories.\n_The realm is being observed._`,
-      `https://github.com/${ORG}`,
-      COLORS.heartbeat,
-      new Date().toISOString()
-    );
-
-    embed.fields = [
-      { name: 'Organization', value: ORG, inline: true },
-      { name: 'Status', value: '🟢 Online', inline: true },
-      { name: 'Run Time', value: new Date().toUTCString(), inline: false },
-    ];
-
-    console.log('[Heartbeat] Sending heartbeat to Discord...');
-    await sendDiscord(webhookUrl, embed);
-  } catch (err) {
-    console.warn(`[Heartbeat] Failed to send heartbeat: ${err.message}`);
-  }
-}
 
 async function processRepo(repo, token, webhooks) {
   const repoName = repo.full_name;
@@ -114,10 +83,6 @@ async function main() {
     issues: process.env.DISCORD_WEBHOOK_ISSUES,
     release: process.env.DISCORD_WEBHOOK_RELEASE,
   };
-
-  if (HEARTBEAT_ENABLED) {
-    await sendHeartbeat(token);
-  }
 
   let repos;
   try {
