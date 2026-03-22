@@ -1,0 +1,15 @@
+{
+  "name": "twilightsmp-discord-orchestrator",
+  "version": "1.0.0",
+  "description": "GitHub → Discord webhook orchestrator for TwilightSMP",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "fs-extra": "^11.2.0"
+  },
+  "license": "MIT"
+}
