@@ -5,7 +5,7 @@ export const COLORS = {
   pull_request: 0xe74c3c,
   issues: 0xf1c40f,
   release: 0x1abc9c,
-  heartbeat: 0x2c2f33,
+
 };
 
 export const SMP_ROLES = ['Relic', 'Cursed', 'Dead', 'Wanderer', 'Bound', 'Forsaken'];
@@ -38,5 +38,3 @@ export const STATE_FILES = {
   issues: 'issues.json',
   release: 'release.json',
 };
-
-export const HEARTBEAT_ENABLED = true;
