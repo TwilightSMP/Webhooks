@@ -1,0 +1,31 @@
+name: TwilightSMP Discord Orchestrator
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # every 5 minutes UTC
+  workflow_dispatch:
+
+jobs:
+  discord-orchestrator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install node-fetch@3.3.1 fs-extra@11.1.1
+
+      - name: Run Discord Orchestrator
+        run: node .github/scripts/discord-orchestrator.js
+        env:
+          DISCORD_WEBHOOK_PUSH: ${{ secrets.DISCORD_WEBHOOK_PUSH }}
+          DISCORD_WEBHOOK_PR: ${{ secrets.DISCORD_WEBHOOK_PR }}
+          DISCORD_WEBHOOK_ISSUES: ${{ secrets.DISCORD_WEBHOOK_ISSUES }}
+          DISCORD_WEBHOOK_RELEASE: ${{ secrets.DISCORD_WEBHOOK_RELEASE }}
+          TWILIGHT_TOKEN: ${{ secrets.TWILIGHT_TOKEN }}
+          GITHUB_ORG: TwilightSMP
